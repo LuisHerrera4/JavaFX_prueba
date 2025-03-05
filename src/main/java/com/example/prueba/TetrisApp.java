@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class TetrisApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Tetris.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Tetris.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 

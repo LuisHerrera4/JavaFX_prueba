@@ -8,6 +8,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class ControladorJuego {
@@ -29,7 +31,7 @@ public class ControladorJuego {
     }
 
     private void iniciarLoop() {
-        loopJuego = new Timeline(new KeyFrame(Duration.millis(500), e -> actualizar()));
+        loopJuego = new Timeline(new KeyFrame(Duration.millis(150), e -> actualizar()));
         loopJuego.setCycleCount(Timeline.INDEFINITE);
         loopJuego.play();
     }
@@ -38,20 +40,26 @@ public class ControladorJuego {
         if (tablero.puedeColocarPieza(piezaActual.getPieza(), piezaActual.getX(), piezaActual.getY() + 1)) {
             piezaActual.moverAbajo();
         } else {
-            tablero.colocarPieza(piezaActual.getPieza(), piezaActual.getX(), piezaActual.getY());
+            // Si la pieza esta en la fila 0, termina el juego
+            if (piezaActual.getY() == 0) {
+                mostrarGameOver();
+                return;
+            }
 
+            tablero.colocarPieza(piezaActual.getPieza(), piezaActual.getX(), piezaActual.getY());
             int lineasEliminadas = tablero.limpiarLineas();
             if (lineasEliminadas > 0) {
                 puntuacion += lineasEliminadas * 100;
-                System.out.println("Líneas eliminadas: " + lineasEliminadas + " | Nueva puntuación: " + puntuacion);
             }
 
             piezaActual = new PiezaActual();
         }
+
         tablero.dibujar(gc);
         piezaActual.dibujar(gc);
         etiquetaPuntuacion.setText("Puntuación: " + puntuacion);
     }
+
 
 
     public void configurarControles(Scene escena) {
@@ -74,6 +82,17 @@ public class ControladorJuego {
             }
         }
     }
+
+    private void mostrarGameOver() {
+        loopJuego.stop(); // Detener el juego
+
+        gc.setFill(Color.RED);
+        gc.setFont(new Font(40));
+        gc.fillText("GAME OVER", 50, 300); // Posicionar en el centro
+
+        System.out.println("GAME OVER");
+    }
+
 
     @FXML
     public void startGame() {
